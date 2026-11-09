@@ -1,0 +1,10 @@
+parser
+
+*.o
+*.ko
+*.obj
+*.elf
+
+*.exe
+*.out
+*.app

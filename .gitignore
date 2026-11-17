@@ -1,4 +1,5 @@
 parser
+build/
 
 *.o
 *.ko

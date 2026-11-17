@@ -1,5 +1,7 @@
 parser
 build/
+parser.c
+parser.h
 
 *.o
 *.ko

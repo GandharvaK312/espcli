@@ -45,13 +45,13 @@ parse_status_t parse_command(char *buffer, parsed_command_t *result){
 bool process_command() {
    char inp_command[MAX_COMMAND_SIZE];
 
-   printf("\nespcli> ");
+   printf("\nmicro> ");
 
    input_status_t inp_status = read_input(inp_command, MAX_COMMAND_SIZE);
 
    switch(inp_status) {
       case INPUT_INVALID: printf("Invalid input\n"); return false;
-      case INPUT_EOF: printf("exiting espcli...\n"); return false;
+      case INPUT_EOF: printf("exiting micro-ctl...\n"); return false;
       case INPUT_ERROR: printf("Input Error\n"); return false;
       case INPUT_SUCCESS: break;
    }
@@ -77,8 +77,8 @@ bool process_command() {
    switch(dispatch_status) {
       case DISPATCH_ERROR: printf("dispatch error. try again\n"); return false;
       case DISPATCH_EMPTY_COMMAND: printf("command not entered \n"); return true;
-      case DISPATCH_COMMAND_NOT_FOUND: printf("-espcli: %s: command not found\n", result.keyword); return true;
-      case DISPATCH_SUCCESS_EXIT: printf("exiting espcli...\n"); return false;
+      case DISPATCH_COMMAND_NOT_FOUND: printf("-micro-ctl: %s: command not found\n", result.keyword); return true;
+      case DISPATCH_SUCCESS_EXIT: printf("exiting micro-ctl...\n"); return false;
       case DISPATCH_FAILED: printf("command execution failed\n"); return true;
       case DISPATCH_SUCCESS: break;
    }

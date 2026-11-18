@@ -21,7 +21,7 @@ bool gpio_write(size_t argc, const char *const argv[]) {
       case PIN_IS_NULL: printf("gpio: write: invalid output pointer\n"); return false;
       case PIN_INVALID: printf("gpio: write: %s: invalid pin number\n", argv[1]); return false;
       case OVERFLOW_ERROR: printf("overflow/underflow detected\n"); return false;
-      case OUT_OF_BOUNDS: printf("pin number out of valid range\n"); return false;
+      case OUT_OF_BOUNDS: printf("gpio: write: pin number out of valid range\n"); return false;
       case GPIO_PARSE_SUCCESS: break;
    }
 

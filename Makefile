@@ -3,7 +3,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Wpedantic -std=c11
 CPPFLAGS = -Iinclude
 
-TARGET = build/espcli
+TARGET = build/micro
 
 SRC = $(wildcard src/*.c) \
       $(wildcard src/gpio/*.c)

@@ -48,7 +48,7 @@ bool gpio_handler(size_t argc, const char* const argv[]) {
       case GPIO_READ: return gpio_read(argc, argv);
       case GPIO_WRITE: return gpio_write(argc, argv);
       case GPIO_MODE: return gpio_mode(argc, argv);
-      case GPIO_FAILED: printf("-espcli: gpio: %s: invalid argument\n", argv[0]); return false;
+      case GPIO_FAILED: printf("-micro-ctl: gpio: %s: invalid argument\n", argv[0]); return false;
    }
    return false;
 }

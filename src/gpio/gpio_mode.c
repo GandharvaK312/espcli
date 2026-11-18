@@ -3,25 +3,30 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <errno.h>
 
 #define MODE_COUNT 3
 
 bool gpio_mode(size_t argc, const char *const argv[]) {
 
    if(argc != MODE_COUNT) { printf("gpio: mode: expected %d arguments\n", MODE_COUNT); return false; }
+   if(!argv) { printf("gpio: mode: invalid argument array\n"); return false; }
 
-   char *endptr;
+   long pinNumber;
 
-   errno = 0;
-   long pinNumber = strtol(argv[1], &endptr, 10);
-   if(endptr == argv[1] || *endptr != '\0') { printf("gpio: mode: %s: invalid pin number\n", argv[1]); return false;}
+   parse_gpio_status_t gpio_status = parse_gpio_pin(argv[1], &pinNumber);
 
-   if(errno == ERANGE) { printf("overflow/underflow detected\n"); return false; }
+   switch(gpio_status) {
+      case INPUT_POINTER_ERROR: printf("gpio: mode: invalid input pointer\n"); return false;
+      case PIN_IS_NULL: printf("gpio: mode: invalid output pointer\n"); return false;
+      case PIN_INVALID: printf("gpio: mode: %s: invalid pin number\n", argv[1]); return false;
+      case OVERFLOW_ERROR: printf("overflow/underflow detected\n"); return false;
+      case OUT_OF_BOUNDS: printf("gpio: mode: pin number out of valid range\n"); return false;
+      case GPIO_PARSE_SUCCESS: break;
+   }
 
-   if(pinNumber > 48 || pinNumber < 0) { printf("pin number out of valid range\n"); return false; }
-
-   printf("checking mode of pin: %ld\n", pinNumber);
+   if(strcmp(argv[2], "input") == 0) { printf("setting input mode to pin: %ld\n", pinNumber); }
+   else if(strcmp(argv[2], "output") == 0) { printf("setting output mode to pin: %ld\n", pinNumber); }
+   else { printf("gpio: mode: %s: invalid mode\n", argv[2]); return false; }
 
    return true;
 }

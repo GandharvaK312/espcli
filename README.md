@@ -1,86 +1,132 @@
-# espcli
+# micro-ctl
 
-**A lightweight command-line interface for embedded systems, built in C.**
+**A lightweight, extensible command-line interface for interacting with and debugging microcontroller-based projects.**
 
-`espcli` is an ongoing project to build a reusable command-line interface for communicating with and debugging ESP32-based embedded systems.
-
-The goal is to interact with a running microcontroller directly from a computer, allowing hardware operations, diagnostics, and testing to be performed through simple terminal commands.
+`micro-ctl` aims to provide a unified interface between a host computer and microcontroller-based systems, enabling developers to interact with hardware, execute commands, inspect system state, and monitor applications without constantly modifying and reflashing firmware.
 
 ## Motivation
 
-Debugging embedded systems often involves repeatedly modifying firmware, recompiling, and reflashing just to test individual operations.
+Embedded development often involves repeatedly modifying firmware, compiling, and flashing just to test individual hardware operations.
 
-`espcli` aims to reduce that friction by providing a command interface between the host computer and the microcontroller.
+`micro-ctl` is an attempt to make that workflow more efficient.
 
-The intended interface would support commands such as:
+The goal is to build a reusable host-side CLI that communicates with microcontrollers through a serial interface, allowing developers to interact with running firmware through a simple command-driven interface.
 
-```bash
-gpio write 48 1
-gpio read 48
-led on
-led off
-status
-uptime
-```
+Rather than building another board-specific utility, the project is being developed with extensibility and hardware independence in mind.
 
-These are planned capabilities; hardware integration is not yet implemented.
+## Current Status
 
-## Current Progress
+**Early development — host-side prototype.**
 
-The project is currently in its command-parser development stage.
+Currently implemented:
 
-Implemented:
-- Command registry using C structures.
-- Function-pointer-based command dispatch.
-- Interactive command loop.
-- Zero-argument command handling.
-- Single-argument command handling.
-- Basic argument validation.
-- Leading and trailing whitespace handling for LED arguments.
-- Command success and failure reporting.
-- Graceful CLI termination and EOF handling.
+- Interactive command-line interface
+- Command parsing and dispatching
+- Function-pointer-based command registration
+- Modular command handling
+- GPIO command interface
+- Argument validation and error handling
+- Reusable command parsing and dispatch architecture
+
+The current GPIO commands perform host-side validation and demonstrate command execution flow. Actual hardware communication and GPIO control are not implemented yet.
 
 ## Planned Features
 
-- [ ] Multi-argument command parsing (`argc` / `argv`).
-- [ ] Reusable command-processing library.
-- [ ] Separate input/output transport from command-processing logic.
-- [ ] USB serial communication with ESP32.
-- [ ] GPIO read/write operations.
-- [ ] LED and peripheral control.
-- [ ] System diagnostics (heap, uptime, status).
-- [ ] Sensor data querying.
-- [ ] Telemetry streaming.
-- [ ] Python-based data visualization and monitoring.
+- [ ] Serial communication with microcontrollers
+- [ ] Firmware-side command interpreter
+- [ ] GPIO read, write, and mode configuration
+- [ ] Peripheral interaction and testing
+- [ ] Device status and diagnostic commands
+- [ ] Runtime telemetry and monitoring
+- [ ] Extensible command registration
+- [ ] Support for multiple microcontroller platforms
+- [ ] Interactive monitoring and visualization tools
+
+## Architecture
+
+The project is being developed around a modular architecture.
+
+```text
+micro-ctl/
+├── include/
+├── src/
+│   ├── main.c
+│   ├── commands.c
+│   └── gpio/
+│       ├── gpio_commands.c
+│       ├── gpio_read.c
+│       ├── gpio_write.c
+│       └── gpio_mode.c
+├── build/
+└── Makefile
+```
+
+The intended communication model:
+
+```text
+        HOST COMPUTER
+       ┌──────────────┐
+       │  micro-ctl   │
+       │              │
+       │ Command Input│
+       │ Parser       │
+       │ Dispatcher   │
+       └──────┬───────┘
+              │
+         Serial Interface
+              │
+       ┌──────▼───────┐
+       │ Microcontroller│
+       │               │
+       │ Command Parser│
+       │ Dispatcher    │
+       │ Hardware APIs │
+       └───────────────┘
+```
+
+The host-side interface and firmware are intended to remain independent components connected through a communication protocol.
 
 ## Design Goals
 
-The project is being developed with the following principles:
+- **Modularity:** Keep command handling, parsing, transport, and hardware interaction separated.
+- **Extensibility:** Make adding new commands and peripherals straightforward.
+- **Portability:** Avoid coupling the host-side application to a particular microcontroller platform.
+- **Simplicity:** Prefer a small, understandable implementation over unnecessary abstractions.
+- **Reusability:** Design components that can be reused across embedded projects.
 
-- **Modularity:** Keep input handling, parsing, command dispatch, and hardware operations separate.
-- **Portability:** Keep the command-processing logic independent of ESP-IDF wherever practical.
-- **Extensibility:** Make it straightforward to register new commands.
-- **Reusability:** Build something that can be carried across future embedded and robotics projects.
-- **Testability:** Make the parser testable on a regular Linux system before integrating it with hardware.
+## Technology
 
-## Technology Stack
+- C
+- Linux
+- Make
+- Serial communication (planned)
 
-- Language: C
-- Development environment: Linux
-- Target hardware: ESP32-S3
-- Embedded framework (planned): ESP-IDF
-- Host-side interface (planned): Serial terminal / Python tooling
+## Development
 
-## Project Status
+The project currently builds as a standalone host-side C application.
 
-<code>Early development — command parser implementation in progress.</code>
+```bash
+git clone https://github.com/gandharvak312/micro-ctl
+cd micro-ctl
+make
+```
 
-The current implementation is a host-side prototype. Communication with ESP32 hardware and actual peripheral control are future development milestones.
+Run the application:
 
-## Long-term Vision
+```bash
+./build/micro
+```
 
-The long-term objective is to develop a lightweight debugging and control interface for embedded systems.
+*Build instructions may evolve as the project develops.*
 
-Rather than building a separate debugging tool for every project, `espcli` aims to provide a common interface for interacting with different embedded applications.
+## Project Philosophy
 
-**Built incrementally, from the parser up.**
+The objective isn't simply to create a command-line wrapper around existing hardware APIs.
+
+It's to understand and build the infrastructure that makes embedded systems easier to interact with, test, and debug.
+
+This project is being developed incrementally, with an emphasis on understanding the underlying systems rather than hiding them behind abstractions.
+
+---
+
+**Status:** Work in progress.
